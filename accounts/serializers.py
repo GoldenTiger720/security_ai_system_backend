@@ -9,7 +9,7 @@ class UserSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('id', 'email', 'first_name', 'last_name', 'role', 
+        fields = ('id', 'email', 'full_name', 'role', 
                   'phone_number', 'profile_picture', 'date_joined', 'last_login')
         read_only_fields = ('id', 'date_joined', 'last_login')
         
@@ -17,28 +17,28 @@ class UserCreateSerializer(serializers.ModelSerializer):
     """Serializer for user creation."""
     
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
-    password_confirm = serializers.CharField(write_only=True, required=True)
+    # password_confirm = serializers.CharField(write_only=True, required=True)
     
     class Meta:
         model = User
-        fields = ('id', 'email', 'password', 'password_confirm', 'first_name', 
-                  'last_name', 'role', 'phone_number', 'profile_picture')
+        fields = ('id', 'email', 'password', 'full_name', 
+                  'role', 
+                  'phone_number')
         extra_kwargs = {
-            'first_name': {'required': True},
-            'last_name': {'required': True},
+            'full_name': {'required': True},
             'email': {'required': True}
         }
     
-    def validate(self, attrs):
-        """Validate that the passwords match."""
-        if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
-        return attrs
+    # def validate(self, attrs):
+    #     """Validate that the passwords match."""
+    #     if attrs['password'] != attrs['password_confirm']:
+    #         raise serializers.ValidationError({"password": "Password fields didn't match."})
+    #     return attrs
     
     def create(self, validated_data):
         """Create and return a new user."""
         # Remove password_confirm from the data
-        validated_data.pop('password_confirm')
+        # validated_data.pop('password_confirm')
         
         user = User.objects.create_user(**validated_data)
         return user
@@ -48,7 +48,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'phone_number', 'profile_picture')
+        fields = ('full_name', 'phone_number', 'profile_picture')
 
 class ChangePasswordSerializer(serializers.Serializer):
     """Serializer for password change."""

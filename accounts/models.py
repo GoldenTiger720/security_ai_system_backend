@@ -40,8 +40,8 @@ class User(AbstractUser):
     
     email = models.EmailField(_('email address'), unique=True)
     username = models.CharField(max_length=150, unique=True, null=True, blank=True)
-    first_name = models.CharField(_('first name'), max_length=150)
-    last_name = models.CharField(_('last name'), max_length=150)
+    full_name = models.CharField(_('full name'), max_length=150)
+    # Remove first_name and last_name fields
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
     phone_number = models.CharField(max_length=20, blank=True, null=True)
     profile_picture = models.ImageField(upload_to='profile_pictures', blank=True, null=True)
@@ -50,7 +50,7 @@ class User(AbstractUser):
     is_active = models.BooleanField(default=True)
     
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['first_name', 'last_name']
+    REQUIRED_FIELDS = ['full_name']
     
     objects = UserManager()
     
@@ -63,11 +63,11 @@ class User(AbstractUser):
     
     def get_full_name(self):
         """Return the user's full name."""
-        return f"{self.first_name} {self.last_name}"
+        return self.full_name
     
     def get_short_name(self):
-        """Return the user's first name."""
-        return self.first_name
+        """Return the first part of the user's name."""
+        return self.full_name.split(' ')[0] if self.full_name else ""
     
     def is_admin(self):
         """Check if the user is an admin."""

@@ -15,4 +15,6 @@ urlpatterns = [
     # User profile routes
     path('user/', UserDetailsView.as_view(), name='user_details'),
     path('change-password/', ChangePasswordView.as_view(), name='change_password'),
+    path('test-register/', UserRegisterView.as_view(), name='test_register'),
 ]
+print(f"Accounts urlpatterns: {urlpatterns}")
